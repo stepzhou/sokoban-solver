@@ -1,18 +1,28 @@
+import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
 public class Board {
+	private static byte PLAYER = 1 << 0;
+	private static byte WALL = 1 << 1;
+	private static byte BOX = 1 << 2;
+	private static byte GOAL = 1 << 3;
 	
-	private BoardPoint[][] board;
-	private BoardPoint player;
-	private HashMap<Character, BoardPoint> charPointMap;
-	private HashMap<BoardPoint, Character> pointCharMap;
+	private EnumSet<State>[][] board;
+	private Point player;
+	private HashMap<Character, EnumSet<State>> charPointMap;
+	private HashMap<EnumSet<State>, Character> pointCharMap;
 	
-	public Board(BoardPoint[][] board, BoardPoint player) {
+	public enum State {
+		PLAYER, WALL, BOX, GOAL, ERROR
+	}
+	
+	public Board(EnumSet<State>[][] board, Point player) {
 		this.board = board;
 		this.player = player;
 		buildBiMap();
@@ -26,8 +36,7 @@ public class Board {
 		BufferedReader reader = new BufferedReader(new FileReader(boardInput));
 		int width = Integer.parseInt(reader.readLine());
 		int height = Integer.parseInt(reader.readLine());
-		BoardPoint[][] boardPoints = new BoardPoint[width][height];
-		BoardPoint player = BoardPoint.Error();
+		EnumSet<State>[][] boardPoints = new EnumSet<State>[width][height];
 
 		String line;
 		for (int row = 0; row < height && (line = reader.readLine()) != null; row++) {
@@ -44,26 +53,20 @@ public class Board {
 	}
 	
 	/**
-	 * Gets the BoardPoint given a character
-	 * @param c the input character
-	 * @return the character's corresponding BoardPoint
+	 * Builds the character/State EnumSet translation tables
 	 */
-	private BoardPoint getBoardPoint(char c) {
-		return charPointMap.get(c).clone();
-	}
-	
 	private void buildBiMap() {
-		charPointMap = new HashMap<Character, BoardPoint>();
-		pointCharMap = new HashMap<BoardPoint, Character>();
-		charPointMap.put('#', new BoardPoint(BoardPoint.State.WALL));
-		charPointMap.put('.', new BoardPoint(BoardPoint.State.GOAL));
-		charPointMap.put('@', new BoardPoint(BoardPoint.State.PLAYER));
-		charPointMap.put('+', new BoardPoint(BoardPoint.State.PLAYER, BoardPoint.State.GOAL));
-		charPointMap.put('$', new BoardPoint(BoardPoint.State.BOX));
-		charPointMap.put('*', new BoardPoint(BoardPoint.State.BOX, BoardPoint.State.GOAL));
-		charPointMap.put(' ', new BoardPoint());
+		charPointMap = new HashMap<Character, EnumSet<State>>();
+		pointCharMap = new HashMap<EnumSet<State>, Character>();
+		charPointMap.put('#', EnumSet.of(State.WALL));
+		charPointMap.put('.', EnumSet.of(State.GOAL));
+		charPointMap.put('@', EnumSet.of(State.PLAYER));
+		charPointMap.put('+', EnumSet.of(State.PLAYER, State.GOAL));
+		charPointMap.put('$', EnumSet.of(State.BOX));
+		charPointMap.put('*', EnumSet.of(State.BOX, State.GOAL));
+		charPointMap.put(' ', EnumSet.noneOf(State.class));
 		
-		for (Entry<Character, BoardPoint> entry : charPointMap.entrySet()) {
+		for (Entry<Character, EnumSet<State>> entry : charPointMap.entrySet()) {
 			pointCharMap.put(entry.getValue(), entry.getKey());
 		}
 		
