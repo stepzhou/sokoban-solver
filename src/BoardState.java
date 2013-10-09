@@ -112,12 +112,14 @@ public class BoardState {
 		newBoard[newPos.x][newPos.y] = toggleField(newPlayerBitField, PLAYER); 
 		
 		// If pushing a box, move box
-		byte oldBoxPos = newBoard[newPos.x][newPos.y];
-		byte newBoxPos = newBoard[oneOutPos.x][oneOutPos.y];
-		newBoard[newPos.x][newPos.y] = toggleField(oldBoxPos, BOX);
-		newBoard[oneOutPos.x][oneOutPos.y] = toggleField(newBoxPos, BOX);
-		
-		// Not copying goals because they SHOULD be the same always
+		if (pointHas(newPos, BOX)) {
+			byte oldBoxPos = newBoard[newPos.x][newPos.y];
+			byte newBoxPos = newBoard[oneOutPos.x][oneOutPos.y];
+			newBoard[newPos.x][newPos.y] = toggleField(oldBoxPos, BOX);
+			newBoard[oneOutPos.x][oneOutPos.y] = toggleField(newBoxPos, BOX);
+		}
+
+		// Not copying goals because they SHOULD be the same anyways...
 		return new BoardState(newBoard, newPos, goals);
 	}
 	

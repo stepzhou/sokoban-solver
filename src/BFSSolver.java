@@ -26,7 +26,8 @@ public class BFSSolver {
 		while (!moveQueue.isEmpty()) {
 			currentState = moveQueue.poll();
 			if (currentState.isSolved()) {
-				// done!
+				System.out.println(currentState);
+				return;
 			}
 			visited.add(currentState);
 			enqueueValidTransitions();
@@ -47,7 +48,8 @@ public class BFSSolver {
 	private void enqueueMove(Point direction) {
 		if (currentState.canMove(direction)) {
 			BoardState newState = currentState.getMove(direction);
-			moveQueue.add(newState);
+			if (!visited.contains(newState))
+				moveQueue.add(newState);
 		}
 	}
 }
