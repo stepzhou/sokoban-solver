@@ -1,18 +1,15 @@
-import java.io.IOException;
 
-
+/**
+ * Tries to solve a Sokoban puzzle with either:
+ * - BFS
+ * - DFS
+ * - Uniform cost search
+ * - Greedy best first search
+ * - A* search
+ * @author stephen
+ * @uni szz2002
+ *
+ */
 public class SokobanSolver {
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		try {
-			Board initialBoard = Board.parseBoardInput("resource/simple.txt");
-			System.out.println(initialBoard);
-		} catch (IOException e) {
-			System.out.println("File not found");
-		}
-	}
 
 }
