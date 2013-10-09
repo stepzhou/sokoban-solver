@@ -8,7 +8,8 @@ public class SokobanSolver {
 	 */
 	public static void main(String[] args) {
 		try {
-			Board intialBoard = Board.parseBoardInput("resource/simple.txt");
+			Board initialBoard = Board.parseBoardInput("resource/simple.txt");
+			System.out.println(initialBoard);
 		} catch (IOException e) {
 			System.out.println("File not found");
 		}
