@@ -14,32 +14,32 @@ import java.io.IOException;
  *
  */
 public class SokobanSolver {
-	public SokobanSolver() {
-	}
 	
-	public void parseArguments(String[] args) {
+	public static void parseArguments(String[] args) {
 		try {
 			String flag = args[0];
 			String puzzlePath = args[1];
 			BoardState initialBoard = BoardState.parseBoardInput(puzzlePath);
+			AbstractSolver solver = null;
 			System.out.println(initialBoard);
 			if (flag.equals("-b")) {
-				BFSSolver bfs = new BFSSolver(initialBoard);
-				String solution = bfs.search();
-				System.out.println(solution);
+				solver = new BFSSolver(initialBoard);
 			}
 			else if (flag.equals("-d")) {
-				DFSSolver dfs = new DFSSolver(initialBoard);
-				String solution = dfs.search();
-				System.out.println(solution);
+				solver = new DFSSolver(initialBoard);
 			}
 			else if (flag.equals("-u")) {
-				UniformCostSolver ucs = new UniformCostSolver(initialBoard);
-				String solution = ucs.search();
-				System.out.println(solution);
+				solver = new UniformCostSolver(initialBoard);
 			}
 			else {
 				System.out.println("Invalid command");
+			}
+			
+			if (solver != null) {
+				String solution = solver.search();
+				long timeElapsed = solver.getElapsedTimeMillis();
+				System.out.println(solution);
+				System.out.println(timeElapsed);
 			}
 		} catch (IOException e) {
 			System.out.println("Puzzle file not found");
@@ -47,4 +47,5 @@ public class SokobanSolver {
 			System.out.println("Solution does not exist");
 		}
 	}
+	
 }

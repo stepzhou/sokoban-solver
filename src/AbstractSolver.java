@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Abstract solver class with base search functionality
@@ -14,6 +15,7 @@ public abstract class AbstractSolver {
 	protected BoardState currentState;
 	protected HashSet<BoardState> visited;
 	protected HashMap<BoardState, BoardState> backtrack;
+	protected Queue<BoardState> queue;
 	
 	private long startTime;
 	private long endTime;
@@ -30,9 +32,29 @@ public abstract class AbstractSolver {
 	 * @return the Sokoban solution move sequence
 	 * @throws NoSolutionException if no solution is found
 	 */
-	public abstract String search() throws NoSolutionException;
+	public String search() throws NoSolutionException {
+		startTimer();
+		queue.add(currentState);
+		visited.add(currentState);
+		while (!queue.isEmpty()) {
+			currentState = queue.poll();
+
+			if (currentState.isSolved()) {
+				System.out.println(currentState);
+				String solution = backtrackMoves(currentState);
+				stopTimer();
+				return solution;
+			}
+
+			ArrayList<BoardState> validMoves = getValidMoves();
+			for (BoardState move : validMoves) {
+				searchFunction(move);
+			}
+		}
+		throw new NoSolutionException();
+	}
 	
-	//protected abstract void searchFunction();
+	protected abstract void searchFunction(BoardState move);
 	
 	/**
 	 * Returns the valid moves from the current state.

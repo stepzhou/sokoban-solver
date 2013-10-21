@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 
@@ -9,35 +8,16 @@ import java.util.LinkedList;
  *
  */
 public class BFSSolver extends AbstractSolver {
-	private LinkedList<BoardState> moveQueue;
 	
 	public BFSSolver(BoardState initialState) {
 		super(initialState);
-		moveQueue = new LinkedList<BoardState>();
+		queue = new LinkedList<BoardState>();
 	}
 	
 	@Override
-	public String search() throws NoSolutionException {
-		startTimer();
-		moveQueue.add(currentState);
+	protected void searchFunction(BoardState move) {
+		backtrack.put(move, currentState);
+		queue.add(move);
 		visited.add(currentState);
-		while (!moveQueue.isEmpty()) {
-			currentState = moveQueue.poll();
-
-			if (currentState.isSolved()) {
-                System.out.println(currentState);
-                String solution = backtrackMoves(currentState);
-                stopTimer();
-                return solution;
-			}
-
-			ArrayList<BoardState> validMoves = getValidMoves();
-			for (BoardState move : validMoves) {
-				backtrack.put(move, currentState);
-				moveQueue.add(move);
-				visited.add(currentState);
-			}
-		}
-		throw new NoSolutionException();
 	}
 }
