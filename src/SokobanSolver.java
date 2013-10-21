@@ -33,6 +33,11 @@ public class SokobanSolver {
 				String solution = dfs.search();
 				System.out.println(solution);
 			}
+			else if (flag.equals("-u")) {
+				UniformCostSolver ucs = new UniformCostSolver(initialBoard);
+				String solution = ucs.search();
+				System.out.println(solution);
+			}
 			else {
 				System.out.println("Invalid command");
 			}

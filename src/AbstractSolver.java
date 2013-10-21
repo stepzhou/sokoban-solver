@@ -16,7 +16,7 @@ public abstract class AbstractSolver {
 		backtrack = new HashMap<BoardState, BoardState>();
 	}
 	
-	abstract String search() throws NoSolutionException;
+	public abstract String search() throws NoSolutionException;
 	
 	protected ArrayList<BoardState> getValidMoves() {
         ArrayList<BoardState> validMoves = new ArrayList<BoardState>(4);

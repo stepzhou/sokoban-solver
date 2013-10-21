@@ -11,7 +11,7 @@ public class DFSSolver extends AbstractSolver {
 	}
 
 	@Override
-	String search() throws NoSolutionException {
+	public String search() throws NoSolutionException {
 		moveStack.push(currentState);
 		visited.add(currentState);
 		while (!moveStack.isEmpty()) {

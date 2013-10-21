@@ -9,10 +9,10 @@ import java.util.Map.Entry;
 
 public class BoardState {
 	// Bitfields guaranteed to never exceed 15
-	private static final byte PLAYER = 1 << 0;
-	private static final byte WALL = 1 << 1;
-	private static final byte BOX = 1 << 2;
-	private static final byte GOAL = 1 << 3;
+	public static final byte PLAYER = 1 << 0;
+	public static final byte WALL = 1 << 1;
+	public static final byte BOX = 1 << 2;
+	public static final byte GOAL = 1 << 3;
 	private static HashMap<Character, Byte> charToField;
 	private static HashMap<Byte, Character> fieldToChar;
 	static {
@@ -35,12 +35,10 @@ public class BoardState {
 	private Point player;
 	private ArrayList<Point> goals;
 	private Point direction;
+	private int cost;
 	
 	public BoardState(byte[][] board, Point player, ArrayList<Point> goals) {
-		this.board = board;
-		this.player = player;
-		this.goals = goals;
-		direction = null;
+		this(board, player, goals, null);
 	}
 
 	public BoardState(byte[][] board, Point player, ArrayList<Point> goals, 
@@ -49,6 +47,7 @@ public class BoardState {
 		this.player = player;
 		this.goals = goals;
 		this.direction = direction;
+		cost = 0;
 	}
 	
 	public boolean isSolved() {
@@ -127,6 +126,11 @@ public class BoardState {
 		return new BoardState(newBoard, newPos, goals, direction);
 	}
 	
+	public boolean nextMoveHas(byte field) {
+		Point nextPos = new Point(player.x + direction.x, player.y + direction.y);
+		return pointHas(nextPos, field);
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -183,10 +187,18 @@ public class BoardState {
 	
 	/**
 	 * Gets the direction that the player made to get to the boardstate
-	 * @return the directoin that the player made to get to the boardstate
+	 * @return the direction that the player made to get to the boardstate
 	 */
 	public Point getDirection() {
 		return direction;
+	}
+	
+	public void setCost(int cost) {
+		this.cost = cost;
+	}
+
+	public int getCost() {
+		return cost;
 	}
 
 	private boolean pointHas(int row, int col, byte field) {
