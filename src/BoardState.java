@@ -7,12 +7,19 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+/**
+ * Represents a single Sokoban BoardState
+ * @author Stephen Zhou
+ * @uni szz2002
+ *
+ */
 public class BoardState {
-	// Bitfields guaranteed to never exceed 15
+	// Board position bitfields
 	public static final byte PLAYER = 1 << 0;
 	public static final byte WALL = 1 << 1;
 	public static final byte BOX = 1 << 2;
 	public static final byte GOAL = 1 << 3;
+	// Character to bitfield bimapping
 	private static HashMap<Character, Byte> charToField;
 	private static HashMap<Byte, Character> fieldToChar;
 	static {
@@ -60,7 +67,7 @@ public class BoardState {
 	}
 	
 	/**
-	 * Returns whether or not the player can move in a certain directoin
+	 * Returns whether or not the player can move in a certain direction
 	 * @param direction the row/col direction
 	 * @return True if player can move, false otherwise
 	 */
@@ -126,6 +133,11 @@ public class BoardState {
 		return new BoardState(newBoard, newPos, goals, direction);
 	}
 	
+	/**
+	 * Returns true if the next move has the input bitfield. False otherwise.
+	 * @param field the next move's bitfield check
+	 * @return True if the next move has the input bitfield. False otherwise.
+	 */
 	public boolean nextMoveHas(byte field) {
 		Point nextPos = new Point(player.x + direction.x, player.y + direction.y);
 		return pointHas(nextPos, field);
@@ -193,22 +205,49 @@ public class BoardState {
 		return direction;
 	}
 	
+	/**
+	 * Sets the current state's cost
+	 * @param cost the current state's cost
+	 */
 	public void setCost(int cost) {
 		this.cost = cost;
 	}
-
+	
+	/**
+	 * Gets the current state's cost
+	 * @return the current state's cost
+	 */
 	public int getCost() {
 		return cost;
 	}
 
+	/**
+	 * Checks if a row/col pair has a certain bitfield
+	 * @param row the board row
+	 * @param col the board column
+	 * @param field the bitfield to check
+	 * @return True if the board row/col has the field. False otherwise.
+	 */
 	private boolean pointHas(int row, int col, byte field) {
 		return (board[row][col] & field) == field;
 	}
 	
+	/**
+	 * Checks if a Point coordinate has a certain field
+	 * @param pos the Point coordinate, where x is row and y is column
+	 * @param field the bitfield to check
+	 * @return True if the Point coordinate has the field. False otherwise.
+	 */
 	private boolean pointHas(Point pos, byte field) {
 		return pointHas(pos.x, pos.y, field);
 	}
 	
+	/**
+	 * Toggles the bitfield with a field.
+	 * @param bitfield the bitfield to toggle
+	 * @param field the field to toggle
+	 * @return the new, toggled bitfield
+	 */
 	private byte toggleField(byte bitfield, byte field) {
 		return (byte) (bitfield ^ field);
 	}

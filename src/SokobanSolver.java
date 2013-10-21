@@ -2,14 +2,14 @@ import java.io.IOException;
 
 
 /**
- * Command line interface for solving Sokoban with:
+ * A shoddy command line interface for solving Sokoban with:
  * - BFS
  * - DFS
  * - Uniform cost search
  * - Greedy best first search
  * - A* search
  * 
- * @author stephen
+ * @author Stephen Zhou
  * @uni szz2002
  *
  */

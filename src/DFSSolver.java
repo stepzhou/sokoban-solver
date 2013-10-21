@@ -12,6 +12,7 @@ public class DFSSolver extends AbstractSolver {
 
 	@Override
 	public String search() throws NoSolutionException {
+		startTimer();
 		moveStack.push(currentState);
 		visited.add(currentState);
 		while (!moveStack.isEmpty()) {
@@ -19,7 +20,9 @@ public class DFSSolver extends AbstractSolver {
 			
 			if (currentState.isSolved()) {
                 System.out.println(currentState);
-				return backtrackMoves(currentState);
+                String solution = backtrackMoves(currentState);
+                stopTimer();
+                return solution;
 			}
 			
 			ArrayList<BoardState> validMoves = getValidMoves();

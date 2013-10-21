@@ -1,15 +1,24 @@
 import java.awt.Point;
 
-
+/**
+ * Wrapper class for Sokoban board movements
+ * @author Stephen Zhou
+ * @uni szz2002
+ *
+ */
 public class Direction {
 	public static final Point UP = new Point(-1, 0);
 	public static final Point RIGHT = new Point(0, 1);
 	public static final Point DOWN = new Point(1, 0);
 	public static final Point LEFT = new Point(0, -1);
-	public static final Point NOMOVE = new Point(0, 0);
 	
 	private Direction() {}
 	
+	/**
+	 * Point direction to character mapping for search output
+	 * @param direction the direction to translate
+	 * @return the corresponding character mapping
+	 */
 	public static char directionToChar(Point direction) {
 		if (direction.equals(UP))
 			return 'u';
