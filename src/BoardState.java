@@ -40,11 +40,21 @@ public class BoardState {
 	private byte[][] board;
 	private Point player;
 	private ArrayList<Point> goals;
+	private Point direction;
 	
 	public BoardState(byte[][] board, Point player, ArrayList<Point> goals) {
 		this.board = board;
 		this.player = player;
 		this.goals = goals;
+		direction = null;
+	}
+
+	public BoardState(byte[][] board, Point player, ArrayList<Point> goals, 
+			Point direction) {
+		this.board = board;
+		this.player = player;
+		this.goals = goals;
+		this.direction = direction;
 	}
 	
 	public boolean isSolved() {
@@ -120,7 +130,7 @@ public class BoardState {
 		}
 
 		// Not copying goals because they SHOULD be the same anyways...
-		return new BoardState(newBoard, newPos, goals);
+		return new BoardState(newBoard, newPos, goals, direction);
 	}
 	
 	@Override
@@ -175,6 +185,14 @@ public class BoardState {
 	 */
 	public byte[][] getBoard() {
 		return board;
+	}
+	
+	/**
+	 * Gets the direction that the player made to get to the boardstate
+	 * @return the directoin that the player made to get to the boardstate
+	 */
+	public Point getDirection() {
+		return direction;
 	}
 
 	private boolean pointHas(int row, int col, byte field) {
