@@ -8,12 +8,6 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 public class BoardState {
-	// Point.x is increasing down row of board, y is increasing right col of board
-	public static final Point UP = new Point(-1, 0);
-	public static final Point RIGHT = new Point(0, 1);
-	public static final Point DOWN = new Point(1, 0);
-	public static final Point LEFT = new Point(0, -1);
-	
 	// Bitfields guaranteed to never exceed 15
 	private static final byte PLAYER = 1 << 0;
 	private static final byte WALL = 1 << 1;
