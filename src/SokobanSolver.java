@@ -2,7 +2,7 @@ import java.io.IOException;
 
 
 /**
- * A shoddy command line interface for solving Sokoban with:
+ * A really shoddy command line interface for solving Sokoban with:
  * - BFS
  * - DFS
  * - Uniform cost search
@@ -32,11 +32,17 @@ public class SokobanSolver {
 			else if (flag.equals("-u")) {
 				solver = new UniformCostSolver(initialBoard);
 			}
-			else if (flag.equals("-a")) {
-				solver = new AStarSolver(initialBoard);
+			else if (flag.equals("-ab")) {
+				solver = new AStarSolver(initialBoard, new BoxGoalHeuristic());
 			}
-			else if (flag.equals("-g")) {
-				solver = new GreedyBFSSolver(initialBoard);
+			else if (flag.equals("-gb")) {
+				solver = new GreedyBFSSolver(initialBoard, new BoxGoalHeuristic());
+			}
+			else if (flag.equals("-am")) {
+				solver = new AStarSolver(initialBoard, new ManhattanHeuristic());
+			}
+			else if (flag.equals("-gm")) {
+				solver = new GreedyBFSSolver(initialBoard, new ManhattanHeuristic());
 			}
 			else {
 				System.out.println("Invalid command");
@@ -46,7 +52,7 @@ public class SokobanSolver {
 				String solution = solver.search();
 				int nodesExplored = solver.getNodesExplored();
 				int previouslySeen = solver.getPreviouslySeen();
-				int queueLength = solver.getQueueLength();
+				int queueLength = solver.getFringeLength();
 				int visitedLength = solver.getVisitedLength();
 				long timeElapsed = solver.getElapsedTimeMillis();
 				System.out.println("Solution: " + solution);
@@ -62,5 +68,5 @@ public class SokobanSolver {
 			System.out.println("Solution does not exist");
 		}
 	}
-	
+
 }

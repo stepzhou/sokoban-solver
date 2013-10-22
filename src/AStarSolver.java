@@ -3,16 +3,23 @@ import java.util.PriorityQueue;
 
 
 public class AStarSolver extends AbstractSolver {
-	public AStarSolver(BoardState initialBoard) {
+	private Heuristic heuristic;
+	
+	private AStarSolver(BoardState initialBoard) {
 		super(initialBoard);
 		queue = new PriorityQueue<BoardState>();
+	}
+	
+	public AStarSolver(BoardState initialBoard, Heuristic heuristic) {
+		this(initialBoard);
+		this.heuristic = heuristic;
 	}
 
 	@Override
 	protected void searchFunction(ArrayList<BoardState> validMoves) {
 		for (BoardState move : validMoves) {
 			backtrack.put(move, currentState);
-			Heuristics.manhattan(move);
+			heuristic.score(move);
 			queue.add(move);
 		}
 	}

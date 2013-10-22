@@ -1,27 +1,36 @@
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.PriorityQueue;
 
-
+/**
+ * Attempts to solve a Sokoban puzzle with greedy best-first search
+ * @author Stephen Zhou
+ * @uni szz2002
+ *
+ */
 public class GreedyBFSSolver extends AbstractSolver {
+	private Heuristic heuristic;
 
-	public GreedyBFSSolver(BoardState initialState) {
+	private GreedyBFSSolver(BoardState initialState) {
 		super(initialState);
 		queue = new PriorityQueue<BoardState>();
+	}
+	
+	public GreedyBFSSolver(BoardState initialState, Heuristic heuristic) {
+		this(initialState);
+		this.heuristic = heuristic;
 	}
 	
 	@Override
 	protected void searchStart() {
 		super.searchStart();
-		Heuristics.manhattan(currentState);
+		heuristic.score(currentState);
 	}
 
 	@Override
 	protected void searchFunction(ArrayList<BoardState> validMoves) {
-		// TODO got to calculate the score of the initial state. maybe method in AS
 		for (BoardState move : validMoves) {
 			backtrack.put(move, currentState);
-			Heuristics.manhattan(move);
+			heuristic.score(move);
 			if (move.getCost() < currentState.getCost()) {
 				queue.add(currentState);
 				queue.add(move);

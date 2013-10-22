@@ -1,4 +1,10 @@
 
+/**
+ * Runner for Sokoban solver
+ * @author Stephen Zhou
+ * @uni szz2002
+ *
+ */
 public class SokobanMain {
 	
 	/**

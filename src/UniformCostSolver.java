@@ -1,6 +1,13 @@
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 
+/**
+ * Attempts to solve a Sokoban puzzle with uniform cost search, having push as
+ * as cost 2 and move as cost 1
+ * @author Stephen Zhou
+ * @uni szz2002
+ *
+ */
 public class UniformCostSolver extends AbstractSolver {
 
 	public UniformCostSolver(BoardState initialState) {

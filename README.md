@@ -5,6 +5,30 @@ Stephen Zhou
 szz2002
 Fall 2013 AI Assignment 2
 
+Files
+-----
+
+/
+    README.md                   -       You're here, silly!
+    resource/                   -       Sokoban tests
+        simple.txt              -       Simple test from assignment
+        moderate-6.txt          -       Moderate test from puzzles on website
+        3-Sophia.txt            -       Simple puzzle from JSoko
+        27-Kristi.txt           -       Relatively hard puzzle from JSoko
+    src/                        -       Source files
+        ...                     -       Too many to list. Read docs for info
+
+Heuristic Idea Source
+---------------------
+
+    http://fragfrog.nl/papers/solving_the_sokoban_problem.pdf
+
+Specifically:
+
+"In our case, some good heuristics, which contribute to the score of a map,
+are: the number of boxes on goal positions, the distance from the boxes to the
+goals, the distance from the player to the closest box."
+
 Usage
 -----
 

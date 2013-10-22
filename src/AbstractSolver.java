@@ -7,6 +7,14 @@ import java.util.Queue;
 
 /**
  * Abstract solver class with base search functionality
+ * 
+ * All subclasses:
+ * 		BFSSolver
+ * 		DFSSolver
+ * 		UniformCostSolver
+ * 		GreedyBFSSolver
+ * 		AStarSolver
+ * 
  * @author Stephen Zhou
  * @uni szz2002
  *
@@ -20,14 +28,13 @@ public abstract class AbstractSolver {
 	private long startTime;
 	private long endTime;
 	private int previouslySeen;
-	private int nodesExplored;
 	
 	public AbstractSolver(BoardState initialState) {
 		currentState = initialState;
 		visited = new HashSet<BoardState>();
 		backtrack = new HashMap<BoardState, BoardState>();
 		startTime = endTime = -1;
-		previouslySeen = nodesExplored = 0;
+		previouslySeen = 0;
 	}
 	
 	/**
@@ -40,8 +47,9 @@ public abstract class AbstractSolver {
 		searchStart();
 		while (!queue.isEmpty()) {
 			currentState = queue.poll();
+			if (visited.contains(currentState))
+				previouslySeen++;
 			visited.add(currentState);
-			nodesExplored++;
 
 			if (currentState.isSolved()) {
 				System.out.println(currentState);
@@ -56,10 +64,17 @@ public abstract class AbstractSolver {
 		throw new NoSolutionException();
 	}
 	
+	/**
+	 * Initialization before the search
+	 */
 	protected void searchStart() {
 		queue.add(currentState);
 	}
 	
+	/**
+	 * Search function
+	 * @param validMoves list of valid movies
+	 */
 	protected abstract void searchFunction(ArrayList<BoardState> validMoves);
 	
 	/**
@@ -118,12 +133,12 @@ public abstract class AbstractSolver {
     	return visited.size();
     }
     
-    public int getQueueLength() {
+    public int getFringeLength() {
     	return queue.size();
     }
     
     public int getNodesExplored() {
-    	return nodesExplored;
+    	return getPreviouslySeen() + getFringeLength() + getVisitedLength();
     }
     
     public int getPreviouslySeen() {
@@ -135,8 +150,6 @@ public abstract class AbstractSolver {
 	        BoardState newState = currentState.getMove(direction);
 	        if (!visited.contains(newState))
 	            moves.add(newState);
-	        else
-	        	previouslySeen++;
 	    }
 	}
 

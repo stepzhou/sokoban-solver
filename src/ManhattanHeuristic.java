@@ -6,7 +6,7 @@ import java.util.Set;
 public class ManhattanHeuristic implements Heuristic {
 
 	@Override
-	public void setScore(BoardState state) {
+	public void score(BoardState state) {
 		Set<Point> goals = state.getGoals();
 		Set<Point> boxes = state.getBoxes();
 		
