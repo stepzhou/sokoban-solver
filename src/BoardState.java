@@ -4,7 +4,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map.Entry;
 
 /**
@@ -13,7 +15,7 @@ import java.util.Map.Entry;
  * @uni szz2002
  *
  */
-public class BoardState {
+public class BoardState implements Comparable<BoardState> {
 	// Board position bitfields
 	public static final byte PLAYER = 1 << 0;
 	public static final byte WALL = 1 << 1;
@@ -41,19 +43,22 @@ public class BoardState {
 	private byte[][] board;
 	private Point player;
 	private ArrayList<Point> goals;
-	private Point direction;
+	private HashSet<Point> boxes;
+	private Point directionTaken;	
 	private int cost;
 	
-	public BoardState(byte[][] board, Point player, ArrayList<Point> goals) {
-		this(board, player, goals, null);
+	public BoardState(byte[][] board, Point player, ArrayList<Point> goals,
+			HashSet<Point> boxes) {
+		this(board, player, goals, boxes, null);
 	}
 
 	public BoardState(byte[][] board, Point player, ArrayList<Point> goals, 
-			Point direction) {
+			HashSet<Point> boxes, Point direction) {
 		this.board = board;
 		this.player = player;
 		this.goals = goals;
-		this.direction = direction;
+		this.boxes = boxes;
+		this.directionTaken = direction;
 		cost = 0;
 	}
 	
@@ -107,30 +112,35 @@ public class BoardState {
 	public BoardState getMove(Point direction) {
 		Point newPos = new Point(player.x + direction.x, player.y + direction.y);
 		Point oneOutPos = new Point(newPos.x + direction.x, newPos.y + direction.y);
+		HashSet<Point> newBoxes = boxes;
 		
-		// Copy board
+		// Deep copy board
 		byte[][] newBoard = new byte[board.length][];
 		for (int i = 0; i < newBoard.length; i++)
 			newBoard[i] = board[i].clone();
 		
-		// Take player off current position
+		// Take player off at current position
 		byte playerBitField = newBoard[player.x][player.y];
 		newBoard[player.x][player.y] = toggleField(playerBitField, PLAYER); 
 		
-		// Turn player on new position
+		// Turn player on at new position
 		byte newPlayerBitField = newBoard[newPos.x][newPos.y];
 		newBoard[newPos.x][newPos.y] = toggleField(newPlayerBitField, PLAYER); 
 		
 		// If pushing a box, move box
 		if (pointHas(newPos, BOX)) {
-			byte oldBoxPos = newBoard[newPos.x][newPos.y];
-			byte newBoxPos = newBoard[oneOutPos.x][oneOutPos.y];
-			newBoard[newPos.x][newPos.y] = toggleField(oldBoxPos, BOX);
-			newBoard[oneOutPos.x][oneOutPos.y] = toggleField(newBoxPos, BOX);
+			byte oldBoxBitfield = newBoard[newPos.x][newPos.y];
+			byte newBoxBitfield = newBoard[oneOutPos.x][oneOutPos.y];
+			newBoard[newPos.x][newPos.y] = toggleField(oldBoxBitfield, BOX);
+			newBoard[oneOutPos.x][oneOutPos.y] = toggleField(newBoxBitfield, BOX);
+			// TODO big potential for a copy bug here?
+			newBoxes = new HashSet<Point>(boxes);
+			newBoxes.remove(newPos);
+			newBoxes.add(oneOutPos);
 		}
 
 		// Not copying goals because they SHOULD be the same anyways...
-		return new BoardState(newBoard, newPos, goals, direction);
+		return new BoardState(newBoard, newPos, goals, newBoxes, direction);
 	}
 	
 	/**
@@ -138,11 +148,61 @@ public class BoardState {
 	 * @param field the next move's bitfield check
 	 * @return True if the next move has the input bitfield. False otherwise.
 	 */
-	public boolean nextMoveHas(byte field) {
+	public boolean nextMoveHas(byte field, Point direction) {
 		Point nextPos = new Point(player.x + direction.x, player.y + direction.y);
 		return pointHas(nextPos, field);
 	}
 	
+	/**
+	 * Gets the byte board representation used for search hashing
+	 * @return the byte board representation
+	 */
+	public byte[][] getBoard() {
+		return board;
+	}
+
+	/**
+	 * Gets the direction that the player made to get to the boardstate
+	 * @return the direction that the player made to get to the boardstate
+	 */
+	public Point getDirectionTaken() {
+		return directionTaken;
+	}
+
+	/**
+	 * Sets the current state's cost
+	 * @param cost the current state's cost
+	 */
+	public void setCost(int cost) {
+		this.cost = cost;
+	}
+
+	/**
+	 * Gets the current state's cost
+	 * @return the current state's cost
+	 */
+	public int getCost() {
+		return cost;
+	}
+	
+	public Collection<Point> getGoals() {
+		return goals;
+	}
+	
+	public Collection<Point> getBoxes() {
+		return boxes;
+	}
+
+	@Override
+	public int compareTo(BoardState other) {
+		if (this.getCost() < other.getCost())
+			return -1;
+		else if (this.getCost() > other.getCost())
+			return 1;
+		else
+			return 0;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -190,38 +250,6 @@ public class BoardState {
 	}
 
 	/**
-	 * Gets the byte board representation used for search hashing
-	 * @return the byte board representation
-	 */
-	public byte[][] getBoard() {
-		return board;
-	}
-	
-	/**
-	 * Gets the direction that the player made to get to the boardstate
-	 * @return the direction that the player made to get to the boardstate
-	 */
-	public Point getDirection() {
-		return direction;
-	}
-	
-	/**
-	 * Sets the current state's cost
-	 * @param cost the current state's cost
-	 */
-	public void setCost(int cost) {
-		this.cost = cost;
-	}
-	
-	/**
-	 * Gets the current state's cost
-	 * @return the current state's cost
-	 */
-	public int getCost() {
-		return cost;
-	}
-
-	/**
 	 * Checks if a row/col pair has a certain bitfield
 	 * @param row the board row
 	 * @param col the board column
@@ -265,6 +293,7 @@ public class BoardState {
 		byte[][] boardPoints = new byte[height][width];
 		Point player = new Point();
 		ArrayList<Point> goals = new ArrayList<Point>();
+		HashSet<Point> boxes = new HashSet<Point>();
 
 		String line;
 		for (int row = 0; row < height && (line = reader.readLine()) != null; row++) {
@@ -275,10 +304,12 @@ public class BoardState {
 					player = new Point(row, col);
 				if ((field & GOAL) == GOAL)
 					goals.add(new Point(row, col));
+				if ((field & BOX) == BOX)
+					boxes.add(new Point(row, col));
 			}
 		}
 
 		reader.close();
-		return new BoardState(boardPoints, player, goals);
+		return new BoardState(boardPoints, player, goals, boxes);
 	}
 }

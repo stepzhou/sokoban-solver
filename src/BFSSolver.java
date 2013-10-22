@@ -18,6 +18,5 @@ public class BFSSolver extends AbstractSolver {
 	protected void searchFunction(BoardState move) {
 		backtrack.put(move, currentState);
 		queue.add(move);
-		visited.add(currentState);
 	}
 }

@@ -17,6 +17,7 @@ public class SokobanSolver {
 	
 	public static void parseArguments(String[] args) {
 		try {
+			// TODO some form of input validation
 			String flag = args[0];
 			String puzzlePath = args[1];
 			BoardState initialBoard = BoardState.parseBoardInput(puzzlePath);
@@ -31,15 +32,26 @@ public class SokobanSolver {
 			else if (flag.equals("-u")) {
 				solver = new UniformCostSolver(initialBoard);
 			}
+			else if (flag.equals("-a")) {
+				solver = new AStarSolver(initialBoard);
+			}
 			else {
 				System.out.println("Invalid command");
 			}
 			
 			if (solver != null) {
 				String solution = solver.search();
+				int nodesExplored = solver.getNodesExplored();
+				int previouslySeen = solver.getPreviouslySeen();
+				int queueLength = solver.getQueueLength();
+				int visitedLength = solver.getVisitedLength();
 				long timeElapsed = solver.getElapsedTimeMillis();
-				System.out.println(solution);
-				System.out.println(timeElapsed);
+				System.out.println("Solution: " + solution);
+				System.out.println("Nodes explored: " + nodesExplored);
+				System.out.println("Previously seen: " + previouslySeen);
+				System.out.println("Fringe: " + queueLength);
+				System.out.println("Explored set: " + visitedLength);
+				System.out.println("Millis elapsed: " + timeElapsed);
 			}
 		} catch (IOException e) {
 			System.out.println("Puzzle file not found");

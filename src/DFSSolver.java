@@ -1,6 +1,11 @@
 import java.util.LinkedList;
 
-
+/**
+ * Attempts to solve a Sokoban puzzle with DFS
+ * @author Stephen Zhou
+ * @uni szz2002
+ *
+ */
 public class DFSSolver extends AbstractSolver {
 	
 	public DFSSolver(BoardState initialState) {
@@ -12,6 +17,5 @@ public class DFSSolver extends AbstractSolver {
 	protected void searchFunction(BoardState move) {
 		backtrack.put(move, currentState);
 		((LinkedList<BoardState>) queue).push(move);
-		visited.add(currentState);
 	}
 }

@@ -19,12 +19,15 @@ public abstract class AbstractSolver {
 	
 	private long startTime;
 	private long endTime;
+	private int previouslySeen;
+	private int nodesExplored;
 	
 	public AbstractSolver(BoardState initialState) {
 		currentState = initialState;
 		visited = new HashSet<BoardState>();
 		backtrack = new HashMap<BoardState, BoardState>();
 		startTime = endTime = -1;
+		previouslySeen = nodesExplored = 0;
 	}
 	
 	/**
@@ -35,9 +38,10 @@ public abstract class AbstractSolver {
 	public String search() throws NoSolutionException {
 		startTimer();
 		queue.add(currentState);
-		visited.add(currentState);
 		while (!queue.isEmpty()) {
 			currentState = queue.poll();
+			visited.add(currentState);
+			nodesExplored++;
 
 			if (currentState.isSolved()) {
 				System.out.println(currentState);
@@ -78,8 +82,8 @@ public abstract class AbstractSolver {
     	// Backtracking solutions and adding moves to stack
 		LinkedList<Character> moveStack = new LinkedList<Character>();
 		BoardState current = finalState;
-		while (current.getDirection() != null) {
-			char move = Direction.directionToChar(current.getDirection());
+		while (current.getDirectionTaken() != null) {
+			char move = Direction.directionToChar(current.getDirectionTaken());
 			moveStack.push(move);
             current = backtrack.get(current);
 		}
@@ -104,8 +108,24 @@ public abstract class AbstractSolver {
     	endTime = System.currentTimeMillis();
     }
     
-    protected long getElapsedTimeMillis() {
+    public long getElapsedTimeMillis() {
     	return endTime - startTime;
+    }
+    
+    public int getVisitedLength() {
+    	return visited.size();
+    }
+    
+    public int getQueueLength() {
+    	return queue.size();
+    }
+    
+    public int getNodesExplored() {
+    	return nodesExplored;
+    }
+    
+    public int getPreviouslySeen() {
+    	return previouslySeen;
     }
 
 	private void addIfValid(ArrayList<BoardState> moves, Point direction) {
@@ -113,6 +133,8 @@ public abstract class AbstractSolver {
 	        BoardState newState = currentState.getMove(direction);
 	        if (!visited.contains(newState))
 	            moves.add(newState);
+	        else
+	        	previouslySeen++;
 	    }
 	}
 
