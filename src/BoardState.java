@@ -2,12 +2,11 @@ import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Represents a single Sokoban BoardState
@@ -42,18 +41,18 @@ public class BoardState implements Comparable<BoardState> {
 	
 	private byte[][] board;
 	private Point player;
-	private ArrayList<Point> goals;
-	private HashSet<Point> boxes;
+	private Set<Point> goals;
+	private Set<Point> boxes;
 	private Point directionTaken;	
 	private int cost;
 	
-	public BoardState(byte[][] board, Point player, ArrayList<Point> goals,
-			HashSet<Point> boxes) {
+	public BoardState(byte[][] board, Point player, Set<Point> goals,
+			Set<Point> boxes) {
 		this(board, player, goals, boxes, null);
 	}
 
-	public BoardState(byte[][] board, Point player, ArrayList<Point> goals, 
-			HashSet<Point> boxes, Point direction) {
+	public BoardState(byte[][] board, Point player, Set<Point> goals, 
+			Set<Point> boxes, Point direction) {
 		this.board = board;
 		this.player = player;
 		this.goals = goals;
@@ -84,20 +83,20 @@ public class BoardState implements Comparable<BoardState> {
 			if (pointHas(oneOutPos, WALL) || pointHas(oneOutPos, BOX))
 				return false;
 			// Shouldn't ever happen
-			else if (pointHas(oneOutPos, PLAYER))
-				throw new IllegalStateException(
-						String.format("Player shouldn't be there row: %d col: %d",
-								oneOutPos.x, oneOutPos.y));
+//			else if (pointHas(oneOutPos, PLAYER))
+//				throw new IllegalStateException(
+//						String.format("Player shouldn't be there row: %d col: %d",
+//								oneOutPos.x, oneOutPos.y));
 			// Goal or empty
 			else
 				return true;
 		}
 		else if (pointHas(newPos, WALL))
 			return false;
-		else if (pointHas(newPos, PLAYER))
-			throw new IllegalStateException(
-					String.format("Player shouldn't be there row: %d col: %d",
-							newPos.x, newPos.y));
+//		else if (pointHas(newPos, PLAYER))
+//			throw new IllegalStateException(
+//					String.format("Player shouldn't be there row: %d col: %d",
+//							newPos.x, newPos.y));
 		// Goal or empty
 		else
 			return true;
@@ -112,7 +111,7 @@ public class BoardState implements Comparable<BoardState> {
 	public BoardState getMove(Point direction) {
 		Point newPos = new Point(player.x + direction.x, player.y + direction.y);
 		Point oneOutPos = new Point(newPos.x + direction.x, newPos.y + direction.y);
-		HashSet<Point> newBoxes = boxes;
+		Set<Point> newBoxes = boxes;
 		
 		// Deep copy board
 		byte[][] newBoard = new byte[board.length][];
@@ -185,12 +184,12 @@ public class BoardState implements Comparable<BoardState> {
 		return cost;
 	}
 	
-	public Collection<Point> getGoals() {
-		return goals;
+	public Set<Point> getGoals() {
+		return new HashSet<Point>(goals);
 	}
 	
-	public Collection<Point> getBoxes() {
-		return boxes;
+	public Set<Point> getBoxes() {
+		return new HashSet<Point>(boxes);
 	}
 
 	@Override
@@ -292,8 +291,8 @@ public class BoardState implements Comparable<BoardState> {
 		int height = Integer.parseInt(reader.readLine());
 		byte[][] boardPoints = new byte[height][width];
 		Point player = new Point();
-		ArrayList<Point> goals = new ArrayList<Point>();
-		HashSet<Point> boxes = new HashSet<Point>();
+		Set<Point> goals = new HashSet<Point>();
+		Set<Point> boxes = new HashSet<Point>();
 
 		String line;
 		for (int row = 0; row < height && (line = reader.readLine()) != null; row++) {

@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 public class UniformCostSolver extends AbstractSolver {
@@ -8,10 +9,12 @@ public class UniformCostSolver extends AbstractSolver {
 	}
 
 	@Override
-	protected void searchFunction(BoardState move) {
-		backtrack.put(move, currentState);
-		uniformCostFunction(move, currentState.getCost());
-		queue.add(move);
+	protected void searchFunction(ArrayList<BoardState> moves) {
+		for (BoardState move : moves) {
+			backtrack.put(move, currentState);
+			uniformCostFunction(move, currentState.getCost());
+			queue.add(move);
+		}
 	}
 
 	private void uniformCostFunction(BoardState state, int baseCost) {

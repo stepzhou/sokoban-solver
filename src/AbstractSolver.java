@@ -37,7 +37,7 @@ public abstract class AbstractSolver {
 	 */
 	public String search() throws NoSolutionException {
 		startTimer();
-		queue.add(currentState);
+		searchStart();
 		while (!queue.isEmpty()) {
 			currentState = queue.poll();
 			visited.add(currentState);
@@ -51,14 +51,16 @@ public abstract class AbstractSolver {
 			}
 
 			ArrayList<BoardState> validMoves = getValidMoves();
-			for (BoardState move : validMoves) {
-				searchFunction(move);
-			}
+			searchFunction(validMoves);
 		}
 		throw new NoSolutionException();
 	}
 	
-	protected abstract void searchFunction(BoardState move);
+	protected void searchStart() {
+		queue.add(currentState);
+	}
+	
+	protected abstract void searchFunction(ArrayList<BoardState> validMoves);
 	
 	/**
 	 * Returns the valid moves from the current state.

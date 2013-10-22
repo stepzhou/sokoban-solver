@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -14,8 +15,10 @@ public class DFSSolver extends AbstractSolver {
 	}
 
 	@Override
-	protected void searchFunction(BoardState move) {
-		backtrack.put(move, currentState);
-		((LinkedList<BoardState>) queue).push(move);
+	protected void searchFunction(ArrayList<BoardState> validMoves) {
+		for (BoardState move : validMoves) {
+			backtrack.put(move, currentState);
+			((LinkedList<BoardState>) queue).push(move);
+		}
 	}
 }

@@ -35,6 +35,9 @@ public class SokobanSolver {
 			else if (flag.equals("-a")) {
 				solver = new AStarSolver(initialBoard);
 			}
+			else if (flag.equals("-g")) {
+				solver = new GreedyBFSSolver(initialBoard);
+			}
 			else {
 				System.out.println("Invalid command");
 			}

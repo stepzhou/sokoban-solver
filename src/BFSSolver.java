@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 
@@ -15,8 +16,10 @@ public class BFSSolver extends AbstractSolver {
 	}
 	
 	@Override
-	protected void searchFunction(BoardState move) {
-		backtrack.put(move, currentState);
-		queue.add(move);
+	protected void searchFunction(ArrayList<BoardState> validMoves) {
+		for (BoardState move : validMoves) {
+			backtrack.put(move, currentState);
+			queue.add(move);
+		}
 	}
 }
