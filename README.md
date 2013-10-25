@@ -2,7 +2,9 @@ Sokoban Solver
 ==============
 
 Stephen Zhou
+
 szz2002
+
 Fall 2013 AI Assignment 2
 
 Goal
